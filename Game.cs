@@ -48,5 +48,11 @@ namespace LevelEditor
         {
             return JsonSerializer.Deserialize<Game>(json);
         }
+
+        public Boolean Verify()
+        {
+            //TODO implement Game Verification
+            return false;
+        }
     }
 }

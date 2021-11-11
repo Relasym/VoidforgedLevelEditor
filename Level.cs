@@ -41,5 +41,11 @@ namespace LevelEditor
         {
             return Objects.ToList();
         }
+
+        public Boolean Verify()
+        {
+            //TODO implement Level Verification
+            return false;
+        }
     }
 }

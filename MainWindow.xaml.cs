@@ -47,12 +47,14 @@ namespace LevelEditor
         Enemy2
     }
 
+
     public partial class MainWindow : Window
     {
         public Game CurrentGame { get; set; }
         public Level CurrentLevel { get; set; }
         public Button SelectedButton { get; set; }
         public GameObjectTypes SelectedObjectType { get; set; }
+        public Dictionary<GameObjectTypes, BitmapImage> Images { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -61,7 +63,12 @@ namespace LevelEditor
             CurrentGame = CreateTestGame();
             CurrentLevel = CurrentGame.GetLevels()[0];
 
-            SelectedButton = null;
+            Images = new();
+            BitmapImage bitmapImage = new();
+            //bitmapImage.UriSource=
+            //Images.Add(GameObjectTypes.Wall,new B
+
+            //SelectedButton = null;
             UpdateView();
         }
 
@@ -115,7 +122,8 @@ namespace LevelEditor
 
         private void Verify_All_Levels_Click(object sender, RoutedEventArgs e)
         {
-            //TODO implement Level verification
+            //TODO implement verification
+            MessageBox.Show(CurrentGame.Verify().ToString());
         }
 
         private void Map_View_Click(object sender, RoutedEventArgs e)
@@ -177,16 +185,9 @@ namespace LevelEditor
         {
             Canvas canvas = (Canvas)sender;
             Point position = e.GetPosition(canvas);
-            Button button = new();
-            button.Width = 50;
-            button.Height = 50;
-            button.Background = Brushes.White;
             double xPosition = Math.Floor(position.X / 50);
             double yPosition = Math.Floor(position.Y / 50);
-            button.SetValue(Canvas.LeftProperty, xPosition * 50);
-            button.SetValue(Canvas.TopProperty, yPosition * 50);
-            button.Click += new RoutedEventHandler(GameObjectBtn_Click);
-            canvas.Children.Add(button);
+            canvas.Children.Add(CreateBlockButton(SelectedObjectType,50,50,xPosition*50,yPosition*50));
         }
 
         private void GameObjectBtn_Click(object sender, RoutedEventArgs e)
@@ -194,7 +195,7 @@ namespace LevelEditor
             MessageBox.Show("Button Clicked");
         }
 
-        private Button CreateBlockButton(int width, int height, int x, int y)
+        private Button CreateBlockButton(GameObjectTypes type, int width, int height, double x, double y)
         {
             Button button = new();
             button.Width = width;
@@ -203,12 +204,18 @@ namespace LevelEditor
             button.SetValue(Canvas.TopProperty, y);
             //TODO set image according to type here
             button.Click += new RoutedEventHandler(GameObjectBtn_Click);
+            Image image = new();
+            image.Width = width;
+            image.Height = height;
+            image.Source = Images[type];
+            button.Content = image;
             return button;
         }
 
-        //TODO remove testfunction
+
         private Game CreateTestGame()
         {
+            //TODO remove testfunction
             GameObject gameObject = new(GameObjectTypes.Wall, 20, 100, 50, 50);
             Level level = new("testlevel1");
             level.AddObject(gameObject);
