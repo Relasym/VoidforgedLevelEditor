@@ -1,0 +1,141 @@
+﻿<Window x:Class="LevelEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LevelEditor"
+        mc:Ignorable="d"
+        Title="Voidforged Level Editor" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="SingleBorderWindow">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Menu Bar-->
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontSize="15" Background="LightGray">
+            <MenuItem Header="_File" >
+                <MenuItem Header="_New" Click="New_File_Click"/>
+                <MenuItem Header="_Open" Click="Open_File_Click"/>
+                <MenuItem Header="_Save" Click="Save_File_Click"/>
+                <Separator/>
+                <MenuItem Header="_Exit" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Database">
+                <MenuItem Header="_Load" Click="Database_Load_Click"/>
+                <MenuItem Header="_Upload" Click="Database_Upload_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Verify">
+                <MenuItem Header="Verify _Current Level" Click="Verify_Current_Level_Click"/>
+                <MenuItem Header="Verify _All Levels" Click="Verify_All_Levels_Click"/>
+            </MenuItem>
+        </Menu>
+        <!--<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Background="DarkGreen"></StackPanel>-->
+        
+        <!--Level Tree-->
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="3,3,0,3" Background="LightGray">
+            <Label FontSize="16" HorizontalAlignment="Center" FontWeight="Bold">Game Controls</Label>
+            <StackPanel >
+                <DockPanel Margin="1">
+                    <Label DockPanel.Dock="Left">Name</Label>
+                    <TextBox Margin="25,1,1,1" x:Name="gameNameTextBox" TextChanged="GameNameTextBox_TextChanged">Name</TextBox>
+                </DockPanel>
+                <DockPanel Margin="1">
+                    <Label DockPanel.Dock="Left">Last Modification</Label>
+                    <Label Margin="25,1,1,1" x:Name="gameModificationDateLabel">Date</Label>
+                </DockPanel>
+                <Separator Margin="3"/>
+                <DockPanel>
+                    <Label FontSize="14" FontWeight="Bold">Levels</Label>
+                    <Button  Click="New_Level_Button_Click" Margin="3,3,10,3" FontSize="12" HorizontalAlignment="Right">Add New Level</Button>
+                </DockPanel>
+                
+                <ListBox x:Name="currentLevelListBox">
+                    <ListBoxItem>Level 1</ListBoxItem>
+                    <ListBoxItem>Level 2</ListBoxItem>
+                    <ListBoxItem>Level 3</ListBoxItem>
+                    <ListBoxItem>Level 4</ListBoxItem>
+                </ListBox>
+            </StackPanel>
+            
+        </StackPanel>
+        
+        <!--Map/Level Bar-->
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="3,3,3,3" Background="DarkGray">
+            <Button Width="100"  Background="DarkGray" FontSize="14" FontWeight="Bold"  Click="Map_View_Click" x:Name="mapViewBtn">Map View</Button>
+            <Button Width="100" Background="DarkGray" FontSize="14" Click="Level_View_Click" x:Name="levelViewBtn">Level View</Button>
+            <!--TODO remove this textbox after testing-->
+            <TextBox x:Name="testTextBlock"></TextBox>
+        </StackPanel>
+        
+        <!--Main Display-->
+        <Canvas Grid.Row="2" Grid.Column="1" Margin="3,0,0,3" Background="DarkRed" MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
+            
+        </Canvas>
+        
+        <!--Level View Sidepanel-->
+        <StackPanel Grid.Row="2" Grid.Column="2" Margin="3,0,3,3" Background="LightGray" x:Name="levelViewSidePanel"  >
+            <Label FontSize="16" Margin="10,5,0,0">Level Elements</Label>
+            <Separator Margin="3"/>
+            <Label FontWeight="Bold" Margin="10,5,0,0">Terrain</Label>
+            <WrapPanel Margin="10,5,5,5">
+                <Button x:Name="Btn_Select_Wall" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Wall}" Margin="5">
+                    <Image x:Name="Img_Btn_Wall" Height="50px" Width="50px" Source="/cavewall.png"/>
+                </Button>
+                <Button  x:Name="Btn_Select_Floor" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Floor}" Margin="5">
+                    <Image x:Name="Img_Btn_Floor" Height="50px" Width="50px" Source="/cavewall.png"></Image>
+                </Button>
+                <Button x:Name="Btn_Select_Door" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Door}" Margin="5">
+                    <Image x:Name="Img_Btn_Door" Height="50px" Width="50px" Source="/cavewall.png" ></Image>
+                </Button>
+            </WrapPanel>
+            <Separator/>
+            <Label FontWeight="Bold" Margin="10,5,0,0">Actors</Label>
+            <WrapPanel Margin="10,5,5,5">
+                <Button x:Name="Btn_Select_Player" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Player}" Margin="5">
+                    <Image x:Name="Img_Btn_Player" Height="50px" Width="50px" Source="/cavewall.png"/>
+                </Button>
+                <Button  x:Name="Btn_Select_Enemy1" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy1}" Margin="5">
+                    <Image x:Name="Img_Btn_Enemy1" Height="50px" Width="50px" Source="/cavewall.png"></Image>
+                </Button>
+                <Button x:Name="Btn_Select_Enemy2" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy2}" Margin="5">
+                    <Image x:Name="Img_Btn_Enemy2" Height="50px" Width="50px" Source="/cavewall.png" ></Image>
+                </Button>
+            </WrapPanel>
+            <Separator/>
+            <Label FontWeight="Bold" Margin="10,5,0,0">Logic</Label>
+            <WrapPanel Margin="10,5,5,5">
+                <Button x:Name="Btn_Select_GameStart" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.GameStart}" Margin="5">
+                    <Image x:Name="Img_Btn_GameStart" Height="50px" Width="50px" Source="/cavewall.png"/>
+                </Button>
+                <Button  x:Name="Btn_Select_LevelTransition" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.LevelTransition}" Margin="5">
+                    <Image x:Name="Img_Btn_LevelTransition" Height="50px" Width="50px" Source="/cavewall.png"></Image>
+                </Button>
+                <Button x:Name="Btn_Select_GameEnd" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.GameEnd}" Margin="5">
+                    <Image x:Name="Img_Btn_GameEnd" Height="50px" Width="50px" Source="/cavewall.png" ></Image>
+                </Button>
+            </WrapPanel>
+            <Separator/>
+        </StackPanel>
+
+        <!--Map View Sidepanel-->
+        <StackPanel Grid.Row="2" Grid.Column="2" Margin="3,0,3,3" Background="LightGray" x:Name="mapViewSidePanel" Visibility="Hidden">
+            <Label FontSize="36" FontFamily="Bold">I am a TestPanel</Label>
+        </StackPanel>
+
+        <!--<Label Grid.Column="0">Names</Label>
+        <ListBox Grid.Row="1" x:Name="lstNames"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+            <TextBox x:Name="txtName"/>
+            <Button x:Name="btnAdd" Margin="0,5,0,0" Click="btnAdd_Click">Add Name</Button>
+        </StackPanel>-->
+
+    </Grid>
+</Window>

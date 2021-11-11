@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="img\**" />
+    <EmbeddedResource Remove="img\**" />
+    <None Remove="img\**" />
+    <Page Remove="img\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="1Character cheap2 side new.png" />
+    <None Remove="cavewall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="1Character cheap2 side new.png" />
+    <Resource Include="cavewall.png" />
+  </ItemGroup>
+
+</Project>
