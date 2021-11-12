@@ -54,7 +54,6 @@ namespace LevelEditor
         public Level CurrentLevel { get; set; }
         public Button SelectedButton { get; set; }
         public GameObjectTypes SelectedObjectType { get; set; }
-        public Dictionary<GameObjectTypes, BitmapImage> Images { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -63,12 +62,6 @@ namespace LevelEditor
             CurrentGame = CreateTestGame();
             CurrentLevel = CurrentGame.GetLevels()[0];
 
-            Images = new();
-            BitmapImage bitmapImage = new();
-            //bitmapImage.UriSource=
-            //Images.Add(GameObjectTypes.Wall,new B
-
-            //SelectedButton = null;
             UpdateView();
         }
 
@@ -185,6 +178,7 @@ namespace LevelEditor
         {
             Canvas canvas = (Canvas)sender;
             Point position = e.GetPosition(canvas);
+            testTextBlock.Text = SelectedObjectType.ToString();
             double xPosition = Math.Floor(position.X / 50);
             double yPosition = Math.Floor(position.Y / 50);
             Button button = CreateBlockButton(SelectedObjectType, 50, 50, xPosition * 50, yPosition * 50);

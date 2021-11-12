@@ -74,8 +74,8 @@
         
         <!--Map/Level Bar-->
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="3,3,3,3" Background="DarkGray">
-            <Button Width="100"  Background="DarkGray" FontSize="14" FontWeight="Bold"  Click="Map_View_Click" x:Name="mapViewBtn">Map View</Button>
-            <Button Width="100" Background="DarkGray" FontSize="14" Click="Level_View_Click" x:Name="levelViewBtn">Level View</Button>
+            <Button Width="100" ToolTip="Switch to Map View" Background="DarkGray" FontSize="14" FontWeight="Bold"  Click="Map_View_Click" x:Name="mapViewBtn">Map View</Button>
+            <Button Width="100" ToolTip="Switch to Level View" Background="DarkGray" FontSize="14" Click="Level_View_Click" x:Name="levelViewBtn">Level View</Button>
             <!--TODO remove this textbox after testing-->
             <TextBox x:Name="testTextBlock"></TextBox>
         </StackPanel>
@@ -91,39 +91,39 @@
             <Separator Margin="3"/>
             <Label FontWeight="Bold" Margin="10,5,0,0">Terrain</Label>
             <WrapPanel Margin="10,5,5,5">
-                <Button x:Name="Btn_Select_Wall" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Wall}" Margin="5">
+                <Button ToolTip="Wall" x:Name="Btn_Select_Wall" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Wall}" Margin="5">
                     <Image x:Name="Img_Btn_Wall" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Wall}}"/>
                 </Button>
-                <Button  x:Name="Btn_Select_Floor" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Floor}" Margin="5">
+                <Button ToolTip="Floor" x:Name="Btn_Select_Floor" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Floor}" Margin="5">
                     <Image x:Name="Img_Btn_Floor" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Floor}}"/>
                 </Button>
-                <Button x:Name="Btn_Select_Door" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Door}" Margin="5">
+                <Button ToolTip="Door" x:Name="Btn_Select_Door" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Door}" Margin="5">
                     <Image x:Name="Img_Btn_Door" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Door}}"/>
                 </Button>
             </WrapPanel>
             <Separator/>
             <Label FontWeight="Bold" Margin="10,5,0,0">Actors</Label>
             <WrapPanel Margin="10,5,5,5">
-                <Button x:Name="Btn_Select_Player" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Player}" Margin="5">
+                <Button ToolTip="Player" x:Name="Btn_Select_Player" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Player}" Margin="5">
                     <Image x:Name="Img_Btn_Player" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Player}}"/>
                 </Button>
-                <Button  x:Name="Btn_Select_Enemy1" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy1}" Margin="5">
+                <Button ToolTip="Enemy 1" x:Name="Btn_Select_Enemy1" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy1}" Margin="5">
                     <Image x:Name="Img_Btn_Enemy1" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Enemy1}}"></Image>
                 </Button>
-                <Button x:Name="Btn_Select_Enemy2" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy2}" Margin="5">
+                <Button ToolTip="Enemy 2" x:Name="Btn_Select_Enemy2" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy2}" Margin="5">
                     <Image x:Name="Img_Btn_Enemy2" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Enemy2}}" ></Image>
                 </Button>
             </WrapPanel>
             <Separator/>
             <Label FontWeight="Bold" Margin="10,5,0,0">Logic</Label>
             <WrapPanel Margin="10,5,5,5">
-                <Button x:Name="Btn_Select_GameStart" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.GameStart}" Margin="5">
+                <Button ToolTip="Start of Game, must be unique" x:Name="Btn_Select_GameStart" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.GameStart}" Margin="5">
                     <Image x:Name="Img_Btn_GameStart" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.GameStart}}"/>
                 </Button>
-                <Button  x:Name="Btn_Select_LevelTransition" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.LevelTransition}" Margin="5">
+                <Button ToolTip="invisible Level Transition" x:Name="Btn_Select_LevelTransition" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.LevelTransition}" Margin="5">
                     <Image x:Name="Img_Btn_LevelTransition" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.LevelTransition}}"></Image>
                 </Button>
-                <Button x:Name="Btn_Select_GameEnd" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.GameEnd}" Margin="5">
+                <Button ToolTip="End of Game" x:Name="Btn_Select_GameEnd" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.GameEnd}" Margin="5">
                     <Image x:Name="Img_Btn_GameEnd" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.GameEnd}}" ></Image>
                 </Button>
             </WrapPanel>
