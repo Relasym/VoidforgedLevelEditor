@@ -187,7 +187,8 @@ namespace LevelEditor
             Point position = e.GetPosition(canvas);
             double xPosition = Math.Floor(position.X / 50);
             double yPosition = Math.Floor(position.Y / 50);
-            canvas.Children.Add(CreateBlockButton(SelectedObjectType,50,50,xPosition*50,yPosition*50));
+            Button button = CreateBlockButton(SelectedObjectType, 50, 50, xPosition * 50, yPosition * 50);
+            canvas.Children.Add(button);
         }
 
         private void GameObjectBtn_Click(object sender, RoutedEventArgs e)
@@ -202,12 +203,11 @@ namespace LevelEditor
             button.Height = height;
             button.SetValue(Canvas.LeftProperty, x);
             button.SetValue(Canvas.TopProperty, y);
-            //TODO set image according to type here
             button.Click += new RoutedEventHandler(GameObjectBtn_Click);
             Image image = new();
             image.Width = width;
             image.Height = height;
-            image.Source = Images[type];
+            image.Source = (ImageSource)this.Resources[type];
             button.Content = image;
             return button;
         }
