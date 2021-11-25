@@ -23,6 +23,11 @@
     <None Remove="block_gamestart.png" />
     <None Remove="block_level_transition.png" />
     <None Remove="block_player.png" />
+    <None Remove="voidforged.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +40,9 @@
     <Resource Include="images\block_gamestart.png" />
     <Resource Include="images\block_level_transition.png" />
     <Resource Include="images\block_player.png" />
+    <Content Include="voidforged.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

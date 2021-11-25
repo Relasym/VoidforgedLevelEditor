@@ -81,7 +81,7 @@
         </StackPanel>
         
         <!--Main Display-->
-        <Canvas Grid.Row="2" Grid.Column="1" Margin="3,0,0,3" Background="DarkRed" MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
+        <Canvas x:Name="mainCanvas" Grid.Row="2" Grid.Column="1" Margin="3,0,0,3" Background="DarkRed" MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
             
         </Canvas>
         
@@ -104,14 +104,15 @@
             <Separator/>
             <Label FontWeight="Bold" Margin="10,5,0,0">Actors</Label>
             <WrapPanel Margin="10,5,5,5">
-                <Button ToolTip="Player" x:Name="Btn_Select_Player" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Player}" Margin="5">
-                    <Image x:Name="Img_Btn_Player" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Player}}"/>
-                </Button>
+                
                 <Button ToolTip="Enemy 1" x:Name="Btn_Select_Enemy1" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy1}" Margin="5">
                     <Image x:Name="Img_Btn_Enemy1" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Enemy1}}"></Image>
                 </Button>
                 <Button ToolTip="Enemy 2" x:Name="Btn_Select_Enemy2" Click="Btn_Select_Object_Click" Tag="{x:Static local:GameObjectTypes.Enemy2}" Margin="5">
                     <Image x:Name="Img_Btn_Enemy2" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Enemy2}}" ></Image>
+                </Button>
+                <Button ToolTip="Player" x:Name="Btn_Select_Player" Click="Btn_Select_Object_Click"  Tag="{x:Static local:GameObjectTypes.Player}" Margin="5" Visibility="Hidden">
+                    <Image x:Name="Img_Btn_Player" Height="50px" Width="50px" Source="{DynamicResource {x:Static local:GameObjectTypes.Player}}"/>
                 </Button>
             </WrapPanel>
             <Separator/>

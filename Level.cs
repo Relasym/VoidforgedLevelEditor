@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Cloud.Firestore;
 
 namespace LevelEditor
 {
+    [FirestoreData]
     public class Level
     {
+        [FirestoreProperty]
         public List<GameObject> Objects { get; set; }
+        [FirestoreProperty]
         public string Name { get; set; }
+        [FirestoreProperty]
         public DateTime LastModification { get; set; }
         
 

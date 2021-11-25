@@ -4,19 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Google.Cloud.Firestore;
 
 namespace LevelEditor
 {
-   
+
+    [FirestoreData]
     public class GameObject
     {
+        [FirestoreProperty]
         public GameObjectTypes Type { get; set; }
-        public int XPosition { get; set; }
-        public int YPosition { get; set; }
+        [FirestoreProperty]
+        public double XPosition { get; set; }
+        [FirestoreProperty]
+        public double YPosition { get; set; }
+        [FirestoreProperty]
         public int Width { get; set; }
+        [FirestoreProperty]
         public int Height { get; set; }
 
-        public GameObject(GameObjectTypes type, int xPosition, int yPosition, int width, int height)
+        public GameObject(GameObjectTypes type, double xPosition, double yPosition, int width, int height)
         {
             Type = type;
             XPosition = xPosition;

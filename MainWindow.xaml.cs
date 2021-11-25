@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Google.Cloud.Firestore;
+using System.Text.Json;
 
 namespace LevelEditor
 {
@@ -54,15 +56,23 @@ namespace LevelEditor
         public Level CurrentLevel { get; set; }
         public Button SelectedButton { get; set; }
         public GameObjectTypes SelectedObjectType { get; set; }
+        public Dictionary<Button, GameObject> ObjectMap { get; set; }
+
+        int maxXPosition = 11;
+        int maxYPosition = 8;
         public MainWindow()
         {
             InitializeComponent();
 
             //create Test game
-            CurrentGame = CreateTestGame();
-            CurrentLevel = CurrentGame.GetLevels()[0];
+            //CurrentGame = CreateTestGame();
+            //CurrentLevel = CurrentGame.GetLevels()[0];
+            CurrentGame = new Game();
+            ObjectMap = new();
 
+            DrawCanvasBorder();
             UpdateView();
+
         }
 
         private void New_File_Click(object sender, RoutedEventArgs e)
@@ -92,6 +102,31 @@ namespace LevelEditor
             }
         }
 
+        private void DrawCanvasBorder()
+        {
+            DrawingGroup group = new DrawingGroup();
+
+            for (int i = 0; i <= maxXPosition; i++)
+            {
+                for (int j = 0; j <= maxYPosition; j++)
+                {
+                    if (i == 0 || j == 0 || i == maxXPosition || j == maxYPosition)
+                    {
+                        ImageDrawing image = new ImageDrawing();
+                        image.Rect = new Rect(i * 64, j * 64, 64, 64);
+                        image.ImageSource = (ImageSource)this.Resources[GameObjectTypes.Wall];
+                        group.Children.Add(image);
+                    }
+                }
+            }
+
+            DrawingImage drawingImage = new DrawingImage(group);
+            Image fullImage = new Image();
+            fullImage.Source = drawingImage;
+
+            mainCanvas.Children.Add(fullImage);
+        }
+
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             //TODO verify file is saved or uploaded
@@ -103,9 +138,27 @@ namespace LevelEditor
             //TODO implement load from database
         }
 
-        private void Database_Upload_Click(object sender, RoutedEventArgs e)
+        private async void Database_Upload_Click(object sender, RoutedEventArgs e)
         {
             //TODO implement upload to database
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"voidforged.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            FirestoreDb firestoreDb = FirestoreDb.Create("voidforged-460d4");
+
+
+            Google.Cloud.Firestore.DocumentReference documentReference = firestoreDb.Collection("games").Document("current");
+            //Google.Cloud.Firestore.CollectionReference collectionReference = firestoreDb.Collection("games");
+            //Google.Cloud.Firestore.DocumentReference docRef = new();
+            string json = CurrentGame.ToJson();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            dict.Add("current", json);
+            //await collectionReference.AddAsync(dict);
+            await documentReference.SetAsync(dict);
+
+
+            //CollectionReference collectionReference = firestoreDb.Collection("games");
+            //await collectionReference.AddAsync(CurrentGame);
+
         }
 
         private void Verify_Current_Level_Click(object sender, RoutedEventArgs e)
@@ -176,19 +229,41 @@ namespace LevelEditor
 
         private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+
             Canvas canvas = (Canvas)sender;
             Point position = e.GetPosition(canvas);
             testTextBlock.Text = SelectedObjectType.ToString();
-            double xPosition = Math.Floor(position.X / 50);
-            double yPosition = Math.Floor(position.Y / 50);
-            Button button = CreateBlockButton(SelectedObjectType, 50, 50, xPosition * 50, yPosition * 50);
-            canvas.Children.Add(button);
+            double xPosition = Math.Floor(position.X / 64);
+            double yPosition = Math.Floor(position.Y / 64);
+            if (xPosition > 0 && yPosition > 0 && xPosition < maxXPosition && yPosition < maxYPosition)
+            {
+                Button button = CreateBlockButton(SelectedObjectType, 64, 64, xPosition * 64, yPosition * 64);
+                GameObject gameObject = new(SelectedObjectType, xPosition, yPosition, 1, 1);
+                if (CurrentLevel == null)
+                {
+                    Level level = new Level("unnamed Level");
+                    CurrentGame.AddLevel(level);
+                    CurrentLevel = level;
+                    UpdateView();
+                }
+                CurrentLevel.AddObject(gameObject);
+                //add gameobject to level here
+                canvas.Children.Add(button);
+                ObjectMap.Add(button, gameObject);
+            }
+
         }
 
         private void GameObjectBtn_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Button Clicked");
+            //MessageBox.Show("Button Clicked");
+            Button button = (Button)sender;
+            CurrentLevel.RemoveObject(ObjectMap[button]);
+            ObjectMap.Remove(button);
+            Canvas canvas = (Canvas)button.Parent;
+            canvas.Children.Remove(button);
         }
+
 
         private Button CreateBlockButton(GameObjectTypes type, int width, int height, double x, double y)
         {
@@ -222,5 +297,7 @@ namespace LevelEditor
             game.AddLevel(level);
             return game;
         }
+
+
     }
 }

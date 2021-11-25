@@ -4,14 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Google.Cloud.Firestore;
 
 namespace LevelEditor
 {
     //a collection of Level objects with some metadata and a JSON export function
+    [FirestoreData]
+
     public class Game
     {
+        [FirestoreProperty]
+
         public List<Level> Levels { get; set; }
+        [FirestoreProperty]
+
         public string Name { get; set; }
+        [FirestoreProperty]
+
         public DateTime LastModification { get; set; }
 
         public Game()
