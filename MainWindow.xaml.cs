@@ -57,6 +57,7 @@ namespace LevelEditor
         public Button SelectedButton { get; set; }
         public GameObjectTypes SelectedObjectType { get; set; }
         public Dictionary<Button, GameObject> ObjectMap { get; set; }
+        private FirestoreDb db;
 
         int maxXPosition = 11;
         int maxYPosition = 8;
@@ -70,14 +71,32 @@ namespace LevelEditor
             CurrentGame = new Game();
             ObjectMap = new();
 
+            dbConnect();
             DrawCanvasBorder();
             UpdateView();
 
         }
 
+        private void dbConnect()
+        {
+            try
+            {
+                string path = AppDomain.CurrentDomain.BaseDirectory + @"voidforged.json";
+                Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+                db = FirestoreDb.Create("voidforged-460d4");
+            }
+            catch (Exception)
+            {
+                Showmessage("Could not connect to Database");
+            }
+            
+        }
+
         private void New_File_Click(object sender, RoutedEventArgs e)
         {
             CurrentGame = new Game();
+            mainCanvas.Children.Clear();
+            DrawCanvasBorder();
             UpdateView();
         }
 
@@ -88,6 +107,10 @@ namespace LevelEditor
             if (openFileDialog.ShowDialog() == true)
             {
                 CurrentGame = Game.FromJson(File.ReadAllText(openFileDialog.FileName));
+                if(CurrentGame.Levels.Count>0)
+                {
+                LoadLevel(CurrentGame.Levels[0]);
+                }
             }
             UpdateView();
         }
@@ -99,6 +122,23 @@ namespace LevelEditor
             if (saveFileDialog.ShowDialog() == true)
             {
                 File.WriteAllText(saveFileDialog.FileName, CurrentGame.ToJson());
+            }
+        }
+        private void LoadLevel(Level level)
+        {
+            CurrentLevel = level;
+            mainCanvas.Children.Clear();
+            DrawCanvasBorder();
+            ObjectMap.Clear();
+            foreach(GameObject currentObject in level.Objects)
+            {
+                if (currentObject != null)
+                {
+                    //create button and add to map
+                    Button button = CreateBlockButton(currentObject.Type, 64, 64, currentObject.XPosition * 64, currentObject.YPosition * 64);
+                    mainCanvas.Children.Add(button);
+                    ObjectMap.Add(button, currentObject);
+                }
             }
         }
 
@@ -133,32 +173,79 @@ namespace LevelEditor
             Close();
         }
 
-        private void Database_Load_Click(object sender, RoutedEventArgs e)
+        private async void Database_Load_Click(object sender, RoutedEventArgs e)
         {
             //TODO implement load from database
+            try
+            {
+                Google.Cloud.Firestore.DocumentReference documentReference = db.Collection("games").Document("current");
+                DocumentSnapshot snap = await documentReference.GetSnapshotAsync();
+                if (snap.Exists)
+                {
+                    Dictionary<string, object> dict = snap.ToDictionary();
+                    string json = dict["current"].ToString();
+                    Game game = Game.FromJson(json);
+                    CurrentGame = game;
+                    LoadLevel(game.Levels[0]);
+                    Showmessage("Load successful");
+                }
+            }
+            catch (Exception ex)
+            {
+                Showmessage("Load Failed: " + ex.Message);
+            }
+            UpdateView();
+            
         }
 
         private async void Database_Upload_Click(object sender, RoutedEventArgs e)
         {
-            //TODO implement upload to database
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"voidforged.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-            FirestoreDb firestoreDb = FirestoreDb.Create("voidforged-460d4");
+            try
+            {
+                Google.Cloud.Firestore.DocumentReference documentReference = db.Collection("games").Document("current");
+                //Google.Cloud.Firestore.CollectionReference collectionReference = firestoreDb.Collection("games");
+                //Google.Cloud.Firestore.DocumentReference docRef = new();
+                string json = CurrentGame.ToJson();
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add("current", json);
+                //await collectionReference.AddAsync(dict);
+                await documentReference.SetAsync(dict);
 
+                //CollectionReference collectionReference = firestoreDb.Collection("games");
+                //await collectionReference.AddAsync(CurrentGame);
+                Showmessage("Upload successful");
+            }
+            catch (Exception ex)
+            {
+                Showmessage("Upload Failed" + ex.Message);
+            }
+            
 
-            Google.Cloud.Firestore.DocumentReference documentReference = firestoreDb.Collection("games").Document("current");
-            //Google.Cloud.Firestore.CollectionReference collectionReference = firestoreDb.Collection("games");
-            //Google.Cloud.Firestore.DocumentReference docRef = new();
-            string json = CurrentGame.ToJson();
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict.Add("current", json);
-            //await collectionReference.AddAsync(dict);
-            await documentReference.SetAsync(dict);
+        }
 
+        private bool LevelName_is_Available(string name)
+        {
+            foreach(Level level in CurrentGame.Levels)
+            {
+                if(level.Name == name)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-            //CollectionReference collectionReference = firestoreDb.Collection("games");
-            //await collectionReference.AddAsync(CurrentGame);
-
+        private string GetLevelName()
+        {
+            string baseString = "level ";
+            int counter = 0;
+            string levelName=baseString+counter.ToString();
+            while (!LevelName_is_Available(levelName))
+            {
+                counter++;
+                levelName = baseString + counter.ToString();
+            }
+            return levelName;
         }
 
         private void Verify_Current_Level_Click(object sender, RoutedEventArgs e)
@@ -174,16 +261,17 @@ namespace LevelEditor
 
         private void Map_View_Click(object sender, RoutedEventArgs e)
         {
-            mapViewBtn.FontWeight = FontWeights.Bold;
-            levelViewBtn.FontWeight = FontWeights.Normal;
-            levelViewSidePanel.Visibility = Visibility.Hidden;
-            mapViewSidePanel.Visibility = Visibility.Visible;
+            //mapViewBtn.FontWeight = FontWeights.Bold;
+            //levelViewBtn.FontWeight = FontWeights.Normal;
+            //levelViewSidePanel.Visibility = Visibility.Hidden;
+            //mapViewSidePanel.Visibility = Visibility.Visible;
+            Showmessage("Map View not implement yet");
 
 
             //start serialisation test code
-            testTextBlock.TextWrapping = TextWrapping.Wrap;
+            //testTextBlock.TextWrapping = TextWrapping.Wrap;
 
-            testTextBlock.Text = CurrentGame.ToJson();
+            //testTextBlock.Text = CurrentGame.ToJson();
             //end serialisation test code
         }
 
@@ -208,7 +296,7 @@ namespace LevelEditor
 
         private void New_Level_Button_Click(object sender, RoutedEventArgs e)
         {
-            CurrentGame.AddLevel(new Level("Unnamed Level"));
+            CurrentGame.AddLevel(new Level(GetLevelName()));
             UpdateView();
         }
 
@@ -241,7 +329,7 @@ namespace LevelEditor
                 GameObject gameObject = new(SelectedObjectType, xPosition, yPosition, 1, 1);
                 if (CurrentLevel == null)
                 {
-                    Level level = new Level("unnamed Level");
+                    Level level = new Level(GetLevelName());
                     CurrentGame.AddLevel(level);
                     CurrentLevel = level;
                     UpdateView();
@@ -256,7 +344,7 @@ namespace LevelEditor
 
         private void GameObjectBtn_Click(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show("Button Clicked");
+            
             Button button = (Button)sender;
             CurrentLevel.RemoveObject(ObjectMap[button]);
             ObjectMap.Remove(button);
@@ -272,6 +360,7 @@ namespace LevelEditor
             button.Height = height;
             button.SetValue(Canvas.LeftProperty, x);
             button.SetValue(Canvas.TopProperty, y);
+            button.Background = Brushes.DarkRed;
             button.Click += new RoutedEventHandler(GameObjectBtn_Click);
             Image image = new();
             image.Width = width;
@@ -298,6 +387,36 @@ namespace LevelEditor
             return game;
         }
 
+        private Level FindLevel(string item)
+        {
+            foreach(Level level in CurrentGame.Levels)
+            {
+                if(level.Name == item)
+                {
+                    return level;
+                }
+            }
+            return null;
+        }
 
+        private void Showmessage(string message)
+        {
+            MessageBox.Show(message);
+        }
+
+        private void currentLevelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox box = (ListBox)sender;
+            var item = box.SelectedItem;
+            if (item != null)
+            {
+                Level level = FindLevel(item.ToString());
+                if(level != null)
+                {
+                    LoadLevel(level);
+                }
+                
+            }
+        }
     }
 }

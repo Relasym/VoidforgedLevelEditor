@@ -50,11 +50,16 @@ namespace LevelEditor
         public string ToJson()
         {
             LastModification = DateTime.Now;
+            if(Name==null)
+            {
+                Name = "Default Name";
+            }
             return JsonSerializer.Serialize(this);
         }
 
         public static Game FromJson(string json)
         {
+        
             return JsonSerializer.Deserialize<Game>(json);
         }
 

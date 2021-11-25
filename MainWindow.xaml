@@ -65,7 +65,7 @@
                     <Button  Click="New_Level_Button_Click" Margin="3,3,10,3" FontSize="12" HorizontalAlignment="Right">Add New Level</Button>
                 </DockPanel>
                 
-                <ListBox x:Name="currentLevelListBox">
+                <ListBox x:Name="currentLevelListBox" SelectionChanged="currentLevelListBox_SelectionChanged">
                    
                 </ListBox>
             </StackPanel>
@@ -74,14 +74,14 @@
         
         <!--Map/Level Bar-->
         <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="3,3,3,3" Background="DarkGray">
-            <Button Width="100" ToolTip="Switch to Map View" Background="DarkGray" FontSize="14" FontWeight="Bold"  Click="Map_View_Click" x:Name="mapViewBtn">Map View</Button>
-            <Button Width="100" ToolTip="Switch to Level View" Background="DarkGray" FontSize="14" Click="Level_View_Click" x:Name="levelViewBtn">Level View</Button>
+            <Button Width="100" ToolTip="Switch to Map View" Background="DarkGray" FontSize="14"  Click="Map_View_Click" x:Name="mapViewBtn">Map View</Button>
+            <Button Width="100" ToolTip="Switch to Level View" Background="DarkGray" FontSize="14" FontWeight="Bold" Click="Level_View_Click" x:Name="levelViewBtn">Level View</Button>
             <!--TODO remove this textbox after testing-->
             <TextBox x:Name="testTextBlock"></TextBox>
         </StackPanel>
         
         <!--Main Display-->
-        <Canvas x:Name="mainCanvas" Grid.Row="2" Grid.Column="1" Margin="3,0,0,3" Background="DarkRed" MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
+        <Canvas x:Name="mainCanvas" Grid.Row="2" Grid.Column="1" Margin="3,0,0,3" Background="Maroon" MouseLeftButtonUp="Canvas_MouseLeftButtonUp">
             
         </Canvas>
         
